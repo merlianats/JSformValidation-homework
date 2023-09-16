@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+
+    <style>
+      body {
+        background-color: #1B1D20;
+      }
+
+      .bg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .card {
+        border-radius: 15px;
+        line-height: 2.15;
+        padding-left: .75em;
+        padding-right: .75em;
+      }
+
+      .name {
+        letter-spacing: 2px;
+      }
+
+      .link-list-daftar {
+        text-decoration: none;
+        color: #2A3439;
+        opacity: 60%;
+      }
+
+      .daftar-list {
+        text-decoration: none;
+        color: #1B1D20;
+      }
+
+      .daftar-list:hover {
+        text-decoration: underline;
+      }
+
+      .tabel {
+        margin-top: 20px; 
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      .tabel th, 
+      .tabel tbody {
+        padding: 10px;
+        text-align: center;
+      }
+
+      .baris {
+        background-color: #333;
+      }
+
+      .baris th {
+        font-weight: bold;
+      }
+
+      .text-white {
+        color: #fff;
+      }
+
+
+    </style>
+  </head>
+  <body>
+      <div class="bg vh-100 mt-2">
+        <div class="container h-100 w-50">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <h2 class="fw-bold">Form Registrasi</h2>
+                        <hr>
+                        <form id="registrasiForm" class="tab active-tab pb-5">
+                            <div class="mb-4">
+                                <label class="name form-label fw-semibold" for="nama">Nama Pendaftar</label>
+                                <input type="text" id="nama" class="form-control" required minlength="10" placeholder="Siapa namamu?">
+                            </div>
+                            <div class="mb-4">
+                                <label class="age form-label fw-semibold" for="umur">Umur Pendaftar</label>
+                                <input type="text" id="umur" class="form-control" required min="10" placeholder="Berapa umurmu?">
+                            </div>
+                            <div class="mb-4">
+                                <label class="money form-label fw-semibold" for="uangSangu">Uang Sangu Pendaftar</label>
+                                <input type="text" id="uangSangu" class="form-control" required min="100000" max="1000000" placeholder="Berapa uang sangumu?">
+                            </div>
+                            <div class="mb-4">
+                                <p class="link-list-daftar mx-1">Ingin melihat list pendaftar? <a class="daftar-list fw-bold" href="#listPendaftar">List Pendaftar</a></p>
+                            </div>
+                            <div class="mb-4">
+                              <p class="link-list-daftar mx-1">Kembali ke <a class="daftar-list fw-bold" href="index.html">halaman utama</a></p>
+                          </div>
+
+                            <button type="button" class="btn btn-dark" onclick="submitForm()">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+              <div id="listPendaftar" class="tab">
+                <h2 class="text-white pt-3">Tab List Pendaftar</h2>
+                <table id="tabelPendaftar" border="4" class="tabel">
+                    <thead>
+                        <tr class="baris text-white">
+                            <th>Nama</th>
+                            <th>Umur</th>
+                            <th>Uang Sangu</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white"></tbody>
+                </table>
+                <p id="resume" class="text-white py-3"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </body>
+  <script>
+    // Membuat array untuk menyimpan data pendaftar
+    const pendaftarList = [];
+  
+    // Fungsi untuk menghitung rata-rata umur dan uang sangu
+    function hitungRataRata() {
+      let totalUmur = 0;
+      let totalUangSangu = 0;
+  
+      for (const pendaftar of pendaftarList) {
+        totalUmur += pendaftar.umur;
+        totalUangSangu += pendaftar.uangSangu;
+      }
+  
+      const rataRataUmur = totalUmur / pendaftarList.length;
+      const rataRataUangSangu = totalUangSangu / pendaftarList.length;
+  
+      return {rataRataUmur, rataRataUangSangu};
+    }
+  
+    // Fungsi untuk menampilkan data pendaftar dan resume teks
+    function tampilkanListPendaftar() {
+      const tabelPendaftar = document.getElementById("tabelPendaftar");
+      const tbody = tabelPendaftar.querySelector("tbody");
+  
+      // Mengosongkan tabel sebelum menambahkan data baru
+      tbody.innerHTML = "";
+  
+      for (const pendaftar of pendaftarList) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${pendaftar.nama}</td>
+          <td>${pendaftar.umur}</td>
+          <td>${pendaftar.uangSangu}</td>`;
+        tbody.appendChild(row);
+      }
+  
+      // Menghitung rata-rata umur dan uang sangu
+      const { rataRataUmur, rataRataUangSangu } = hitungRataRata();
+      const resume = document.getElementById("resume");
+      resume.textContent = `Rata-rata pendaftar memiliki uang sangu sebesar ${rataRataUangSangu.toFixed(0)} dengan rata-rata umur ${rataRataUmur.toFixed(0)}`;
+    }
+  
+    // Fungsi untuk memvalidasi form dan menambahkan data pendaftar
+    async function submitForm() {
+        const namaInput = document.getElementById("nama");
+        const umurInput = document.getElementById("umur");
+        const uangSanguInput = document.getElementById("uangSangu");
+
+        const nama = namaInput.value;
+        const umur = parseInt(umurInput.value);
+        const uangSangu = parseFloat(uangSanguInput.value);
+
+        // Validasi input apakah sudah sesuai kriteria atau belum
+        if (nama.length < 10) {
+          await showError("Nama pendaftar harus minimal 10 karakter.");
+          return;
+        }
+
+        if (umur < 25) {
+          await showError("Umur pendaftar harus minimal 25 tahun.");
+          return;
+        }
+
+        if (uangSangu < 100000 || uangSangu > 1000000) {
+          await showError("Uang sangu pendaftar harus antara 100 ribu dan 1 juta.");
+          return;
+        }
+
+        // Menambahkan data pendaftar ke dalam array menggunakan push
+        pendaftarList.push({nama, umur, uangSangu});
+
+        // Kosongkan input
+        namaInput.value = "";
+        umurInput.value = "";
+        uangSanguInput.value = "";
+
+        // Menampilkan data pendaftar dan resume dengan memanggil fungsi
+        tampilkanListPendaftar();
+      }
+
+      // Fungsi untuk menampilkan pesan kesalahan secara async
+      async function showError(message) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            alert(message);
+            resolve();
+          }, 0);
+        });
+      }
+  
+    // Inisialisasi tab
+    document.addEventListener("DOMContentLoaded", function () {
+      const tabRegistrasi = document.querySelector(".tab.active-tab");
+      const tabListPendaftar = document.querySelector("#listPendaftar");
+  
+      // Fungsi untuk mengganti tab aktif
+      function gantiTab(tab) {
+        tabRegistrasi.classList.remove("active-tab");
+        tabListPendaftar.classList.remove("active-tab");
+  
+        tab.classList.add("active-tab");
+      }
+  
+      // Event handler untuk mengganti tab saat link itu diklik
+      document.querySelector(".daftar-list").addEventListener("click", function (event) {
+        event.preventDefault();
+        gantiTab(tabListPendaftar);
+      });
+  
+      document.querySelector(".btn.btn-dark").addEventListener("click", function () {
+        gantiTab(tabRegistrasi);
+      });
+    });
+  </script>
+  
+</html>
